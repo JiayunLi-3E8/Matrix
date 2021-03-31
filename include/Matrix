@@ -1,0 +1,28 @@
+#ifndef _MATRIX_
+#define _MATRIX_
+
+#include "Fraction"
+
+namespace JoY
+{
+	struct MN
+	{
+		int m, n;
+	};
+
+	class Matrix
+	{
+		MN mn;
+		Fraction **A;
+
+	public:
+		Matrix(int m = 3, int n = 3);
+		~Matrix();
+		MN getMN();
+		Fraction **useA();
+		Matrix getAT();
+		Matrix getSimplestLine();
+	};
+}
+
+#endif

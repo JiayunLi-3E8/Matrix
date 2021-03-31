@@ -1,0 +1,62 @@
+#ifndef _FRACTION_
+#define _FRACTION_
+
+#include <iostream>
+
+namespace JoY
+{
+	class Fraction
+	{
+		int nmrt, dnmnt;
+		void reduce();
+
+	public:
+		Fraction(int nmrt = 0, int dnmnt = 1);
+		Fraction operator-();
+		Fraction operator~();
+		Fraction operator+(const Fraction &fra);
+		Fraction operator+(const int &i);
+		friend Fraction operator+(int i, Fraction &fra);
+		Fraction operator-(const Fraction &fra);
+		Fraction operator-(const int &i);
+		friend Fraction operator-(int i, Fraction &fra);
+		Fraction operator*(const Fraction &fra);
+		Fraction operator*(const int &i);
+		friend Fraction operator*(int i, Fraction &fra);
+		Fraction operator/(const Fraction &fra);
+		Fraction operator/(const int &i);
+		friend Fraction operator/(int i, Fraction &fra);
+		const Fraction &operator=(const Fraction &fra);
+		const int &operator=(const int &i);
+		Fraction operator+=(const Fraction &fra);
+		Fraction operator+=(const int &i);
+		Fraction operator-=(const Fraction &fra);
+		Fraction operator-=(const int &i);
+		Fraction operator*=(const Fraction &fra);
+		Fraction operator*=(const int &i);
+		Fraction operator/=(const Fraction &fra);
+		Fraction operator/=(const int &i);
+		bool operator<(const Fraction &fra);
+		bool operator<(const int &i);
+		friend bool operator<(int i, Fraction &fra);
+		bool operator<=(const Fraction &fra);
+		bool operator<=(const int &i);
+		friend bool operator<=(int i, Fraction &fra);
+		bool operator==(const Fraction &fra);
+		bool operator==(const int &i);
+		friend bool operator==(int i, Fraction &fra);
+		bool operator!=(const Fraction &fra);
+		bool operator!=(const int &i);
+		friend bool operator!=(int i, Fraction &fra);
+		bool operator>(const Fraction &fra);
+		bool operator>(const int &i);
+		friend bool operator>(int i, Fraction &fra);
+		bool operator>=(const Fraction &fra);
+		bool operator>=(const int &i);
+		friend bool operator>=(int i, Fraction &fra);
+		friend std::istream &operator>>(std::istream &input, Fraction &fra);
+		friend std::ostream &operator<<(std::ostream &output, Fraction &fra);
+	};
+}
+
+#endif
