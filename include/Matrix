@@ -1,6 +1,7 @@
 #ifndef _MATRIX_
 #define _MATRIX_
 
+#include <iostream>
 #include "Fraction"
 
 namespace JoY
@@ -8,20 +9,40 @@ namespace JoY
 	struct MN
 	{
 		int m, n;
+		bool operator==(const MN &mn);
+		bool operator!=(const MN &mn);
 	};
 
 	class Matrix
 	{
+	protected:
 		MN mn;
 		Fraction **A;
+		void New();
+		void Del();
+		void Renew(int m = 3, int n = 3);
 
 	public:
 		Matrix(int m = 3, int n = 3);
 		~Matrix();
 		MN getMN();
-		Fraction **useA();
 		Matrix getAT();
 		Matrix getSimplestLine();
+		int r();
+		const Matrix &operator=(const Matrix &fra);
+		Matrix operator+(Matrix &a);
+		Matrix operator-(Matrix &a);
+		void operator+=(Matrix &a);
+		void operator-=(Matrix &a);
+		Matrix operator*(const Matrix &a);
+		friend std::istream &operator>>(std::istream &input, Matrix &a);
+		friend std::ostream &operator<<(std::ostream &output, Matrix &a);
+	};
+
+	class SquareMatrix : public Matrix
+	{
+	public:
+		SquareMatrix(int n = 3) : Matrix(n, n){}
 	};
 }
 
