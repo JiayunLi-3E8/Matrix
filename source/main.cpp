@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Matrix"
+#include "Fraction"
 
 using namespace std;
 using namespace JoY;
@@ -8,29 +9,34 @@ int main()
 {
 	cout << "----------------> Matrix calculation <----------------" << endl;
 
+	// Matrix b;
 	SquareMatrix a;
-	cout << a;
 
-	// int m, n;
-	// Matrix a, b;
+	cin >> a /* >> b */;
 
-	// cin >> a >> b;
-	// Matrix c(a * b);
-	// cout << c;
+	// cout << "[a*b]:" << a * b << endl;
 
-	// cin >> a;
-	// cout
-	// 	<< "m,n of [a]: " << a.getMN().m << "," << a.getMN().n << endl
-	// 	<< "[a]:" << a << "r(a)=" << a.r() << endl
-	// 	<< endl;
+	cout << "m,n of [a]: " << a.getMN().m << "," << a.getMN().n << endl
+		 << "[a]:" << a << "r(a)=" << a.r() << endl
+		 << endl;
 
-	// Matrix aT(a.getAT());
-	// cout << "m,n of [aT]: " << aT.getMN().m << "," << aT.getMN().n << endl
-	// 	 << "[aT]:" << aT << endl;
+	SquareMatrix aT = a.getAT();
+	cout << "[aT]:" << aT << endl;
 
-	// Matrix aSL(a.getSimplestLine());
-	// cout << "m,n of [aSL]: " << aSL.getMN().m << "," << aSL.getMN().n << endl
-	// 	 << "[aSL]:" << aSL << endl;
+	SquareMatrix ald = a.getLadder();
+	cout << "[ald]:" << ald << endl;
+
+	SquareMatrix aSL = a.getSimplestLine();
+	cout << "[aSL]:" << aSL << endl;
+
+	Fraction dmt = a.getDeterminant();
+	cout << "dmt:" << dmt << endl;
+
+	SquareMatrix adj = a.getAdjoint();
+	cout << "[adj]:" << adj << endl;
+
+	SquareMatrix inv = a.getInverse();
+	cout << "[inv]:" << inv << endl;
 
 	return 0;
 }

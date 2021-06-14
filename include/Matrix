@@ -2,10 +2,11 @@
 #define _MATRIX_
 
 #include <iostream>
-#include "Fraction"
 
 namespace JoY
 {
+	class Fraction;
+
 	struct MN
 	{
 		int m, n;
@@ -23,26 +24,40 @@ namespace JoY
 		void Renew(int m = 3, int n = 3);
 
 	public:
-		Matrix(int m = 3, int n = 3);
+		explicit Matrix(int m = 3, int n = 3);
+		Matrix(const Matrix &o);
 		~Matrix();
-		MN getMN();
+		const MN &getMN() const;
 		Matrix getAT();
+		Matrix getLadder();
 		Matrix getSimplestLine();
 		int r();
-		const Matrix &operator=(const Matrix &fra);
+		const Matrix &operator=(const Matrix &a);
 		Matrix operator+(Matrix &a);
 		Matrix operator-(Matrix &a);
 		void operator+=(Matrix &a);
 		void operator-=(Matrix &a);
 		Matrix operator*(const Matrix &a);
+		Matrix operator/(const Fraction &a);
+		Matrix operator*(const Fraction &a);
+		friend Matrix operator*(const Fraction &a, const Matrix &A);
 		friend std::istream &operator>>(std::istream &input, Matrix &a);
-		friend std::ostream &operator<<(std::ostream &output, Matrix &a);
+		friend std::ostream &operator<<(std::ostream &output, Matrix a);
 	};
 
 	class SquareMatrix : public Matrix
 	{
 	public:
-		SquareMatrix(int n = 3) : Matrix(n, n){}
+		explicit SquareMatrix(int n = 3);
+		SquareMatrix(Matrix src);
+		const Matrix &operator=(const Matrix &a);
+		Fraction getDeterminant();
+		SquareMatrix getComplementarySubmatrix(int mIndex, int nIndex);
+		Fraction getMinor(int mIndex, int nIndex);
+		Fraction getCofactor(int mIndex, int nIndex);
+		SquareMatrix getAdjoint();
+		SquareMatrix getInverse();
+		friend std::istream &operator>>(std::istream &input, SquareMatrix &a);
 	};
 }
 

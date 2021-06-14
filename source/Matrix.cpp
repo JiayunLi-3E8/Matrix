@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
 #include "Matrix"
+#include "Fraction"
 
 using namespace std;
 
 namespace JoY
 {
+	// -------------------------------> MN <-------------------------------
 	bool MN::operator==(const MN &mn)
 	{
 		return mn.m == m && mn.n == n;
@@ -16,6 +18,7 @@ namespace JoY
 		return !(*this == mn);
 	}
 
+	// -------------------------------> Matrix <-------------------------------
 	void Matrix::New()
 	{
 		A = new Fraction *[mn.m];
@@ -36,10 +39,13 @@ namespace JoY
 
 	void Matrix::Renew(int m, int n)
 	{
-		Del();
-		mn.m = m;
-		mn.n = n;
-		New();
+		if (mn.m != m || mn.n != n)
+		{
+			Del();
+			mn.m = m;
+			mn.n = n;
+			New();
+		}
 	}
 
 	Matrix::Matrix(int m, int n)
@@ -49,13 +55,27 @@ namespace JoY
 		New();
 	}
 
+	Matrix::Matrix(const Matrix &o)
+	{
+		mn.m = o.mn.m;
+		mn.n = o.mn.n;
+		New();
+		for (int m = 0; m < mn.m; m++)
+		{
+			for (int n = 0; n < mn.n; n++)
+			{
+				A[m][n] = o.A[m][n];
+			}
+		}
+	}
+
 	Matrix::~Matrix()
 	{
 		Del();
-		std::cout << "~" << this << std::endl;
+		// std::cout << "~" << this << std::endl;
 	}
 
-	MN Matrix::getMN()
+	const MN &Matrix::getMN() const
 	{
 		return mn;
 	}
@@ -73,16 +93,66 @@ namespace JoY
 		return aT;
 	}
 
-	Matrix Matrix::getSimplestLine()
+	Matrix Matrix::getLadder()
 	{
-		Matrix aSimplestLine(mn.m, mn.n);
-		for (int m = 0; m < mn.m; m++)
+		Matrix aLadder(mn.m, mn.n);
+		aLadder = *this;
+
+		int m = 0, n = 0;
+		while (m < aLadder.mn.m)
 		{
-			for (int n = 0; n < mn.n; n++)
+			while (n < aLadder.mn.n)
 			{
-				aSimplestLine.A[m][n] = A[m][n];
+				if (aLadder.A[m][n] == 0)
+				{
+					int i = m + 1;
+					while (i < aLadder.mn.m)
+					{
+						if (aLadder.A[i][n] != 0)
+						{
+							break;
+						}
+						i++;
+					}
+					if (i >= aLadder.mn.m)
+					{
+						n++;
+						continue;
+					}
+					else
+					{
+						for (int j = n; j < aLadder.mn.n; j++)
+						{
+							aLadder.A[m][j] += aLadder.A[i][j];
+						}
+					}
+				}
+				for (int i = m + 1; i < aLadder.mn.m; i++)
+				{
+					for (int j = aLadder.mn.n - 1; j >= n; j--)
+					{
+						aLadder.A[i][j] -= aLadder.A[i][n] * aLadder.A[m][j] / aLadder.A[m][n];
+					}
+				}
+				n++;
+				break;
+			}
+			if (n >= aLadder.mn.n)
+			{
+				break;
+			}
+			else
+			{
+				m++;
 			}
 		}
+
+		return aLadder;
+	}
+
+	Matrix Matrix::getSimplestLine()
+	{
+		Matrix aSimplestLine = this->getLadder();
 
 		int m = 0, n = 0;
 		while (m < aSimplestLine.mn.m)
@@ -91,40 +161,14 @@ namespace JoY
 			{
 				if (aSimplestLine.A[m][n] == 0)
 				{
-					int i = m + 1;
-					while (i < aSimplestLine.mn.m)
-					{
-						if (aSimplestLine.A[i][n] != 0)
-						{
-							break;
-						}
-						i++;
-					}
-					if (i >= aSimplestLine.mn.m)
-					{
-						n++;
-						continue;
-					}
-					else
-					{
-						for (int j = n; j < aSimplestLine.mn.n; j++)
-						{
-							aSimplestLine.A[m][j] += aSimplestLine.A[i][j];
-						}
-					}
+					n++;
+					continue;
 				}
 				if (aSimplestLine.A[m][n] != 1)
 				{
 					for (int j = aSimplestLine.mn.n - 1; j >= n; j--)
 					{
 						aSimplestLine.A[m][j] /= aSimplestLine.A[m][n];
-					}
-				}
-				for (int i = m + 1; i < aSimplestLine.mn.m; i++)
-				{
-					for (int j = aSimplestLine.mn.n - 1; j >= n; j--)
-					{
-						aSimplestLine.A[i][j] -= aSimplestLine.A[i][n] * aSimplestLine.A[m][j];
 					}
 				}
 				n++;
@@ -170,7 +214,7 @@ namespace JoY
 
 	int Matrix::r()
 	{
-		Matrix asl(getSimplestLine());
+		Matrix asl = this->getSimplestLine();
 		int m = 0;
 		while (m < asl.mn.m)
 		{
@@ -207,9 +251,9 @@ namespace JoY
 
 	Matrix Matrix::operator+(Matrix &a)
 	{
-		Matrix newA(mn.m, mn.n);
 		if (a.mn == mn)
 		{
+			Matrix newA(mn.m, mn.n);
 			for (int m = 0; m < mn.m; m++)
 			{
 				for (int n = 0; n < mn.n; n++)
@@ -217,20 +261,20 @@ namespace JoY
 					newA.A[m][n] = A[m][n] + a.A[m][n];
 				}
 			}
+			return newA;
 		}
 		else
 		{
-			invalid_argument e("The 'm,n' of the two matrices are different and cannot be added.");
+			domain_error e("The 'm,n' of the two matrices are different and cannot be added.");
 			throw e;
 		}
-		return newA;
 	}
 
 	Matrix Matrix::operator-(Matrix &a)
 	{
-		Matrix newA(mn.m, mn.n);
 		if (a.mn == mn)
 		{
+			Matrix newA(mn.m, mn.n);
 			for (int m = 0; m < mn.m; m++)
 			{
 				for (int n = 0; n < mn.n; n++)
@@ -238,13 +282,13 @@ namespace JoY
 					newA.A[m][n] = A[m][n] - a.A[m][n];
 				}
 			}
+			return newA;
 		}
 		else
 		{
-			invalid_argument e("The 'm,n' of the two matrices are different and cannot be subtracted.");
+			domain_error e("The 'm,n' of the two matrices are different and cannot be subtracted.");
 			throw e;
 		}
-		return newA;
 	}
 
 	void Matrix::operator+=(Matrix &a)
@@ -261,7 +305,7 @@ namespace JoY
 		}
 		else
 		{
-			invalid_argument e("The 'm,n' of the two matrices are different and cannot be added.");
+			domain_error e("The 'm,n' of the two matrices are different and cannot be added.");
 			throw e;
 		}
 	}
@@ -280,45 +324,74 @@ namespace JoY
 		}
 		else
 		{
-			invalid_argument e("The 'm,n' of the two matrices are different and cannot be subtracted.");
+			domain_error e("The 'm,n' of the two matrices are different and cannot be subtracted.");
 			throw e;
 		}
 	}
 
 	Matrix Matrix::operator*(const Matrix &a)
 	{
-		Matrix newA(mn.m, a.mn.n);
 		if (mn.n == a.mn.m)
 		{
+			Matrix newA(mn.m, a.mn.n);
 			for (int m = 0; m < mn.m; m++)
 			{
 				for (int n = 0; n < a.mn.n; n++)
 				{
-					Fraction sum;
 					for (int i = 0; i < mn.n; i++)
 					{
-						sum += A[m][i] * a.A[i][n];
+						newA.A[m][n] += A[m][i] * a.A[i][n];
 					}
-					newA.A[m][n] = sum;
 				}
 			}
+			return newA;
 		}
 		else
 		{
-			invalid_argument e("The 'n' of the left matrix is different from the 'm' of the right and cannot be multiplied.");
+			domain_error e("The 'n' of the left matrix is different from the 'm' of the right and cannot be multiplied.");
 			throw e;
 		}
+	}
+
+	Matrix Matrix::operator/(const Fraction &a)
+	{
+		Matrix newA(mn.m, mn.n);
+		for (int m = 0; m < mn.m; m++)
+		{
+			for (int n = 0; n < mn.n; n++)
+			{
+				newA.A[m][n] = A[m][n] / a;
+			}
+		}
 		return newA;
+	}
+
+	Matrix Matrix::operator*(const Fraction &a)
+	{
+		Matrix newA(mn.m, mn.n);
+		for (int m = 0; m < mn.m; m++)
+		{
+			for (int n = 0; n < mn.n; n++)
+			{
+				newA.A[m][n] = A[m][n] * a;
+			}
+		}
+		return newA;
+	}
+
+	Matrix operator*(const Fraction &a, Matrix &A)
+	{
+		return A * a;
 	}
 
 	istream &operator>>(istream &input, Matrix &a)
 	{
 		int m, n;
 		cout << endl
-			 << "Input m,n of matrix(Separate by space):" << endl;
+			 << "Input m,n of the matrix(Separate by space):" << endl;
 		input >> m >> n;
 		a.Renew(m, n);
-		cout << "----------------Input items of matrix----------------" << endl;
+		cout << "---------Input items of the matrix---------" << endl;
 		for (m = 0; m < a.mn.m; m++)
 		{
 			for (n = 0; n < a.mn.n; n++)
@@ -330,7 +403,7 @@ namespace JoY
 		return input;
 	}
 
-	ostream &operator<<(ostream &output, Matrix &a)
+	ostream &operator<<(ostream &output, Matrix a)
 	{
 		for (int m = 0; m < a.mn.m; m++)
 		{
@@ -342,5 +415,135 @@ namespace JoY
 			output << endl;
 		}
 		return output;
+	}
+
+	// -------------------------------> SquareMatrix <-------------------------------
+	SquareMatrix::SquareMatrix(int n) : Matrix(n, n) {}
+
+	SquareMatrix::SquareMatrix(Matrix src)
+	{
+		*this = src;
+	}
+
+	const Matrix &SquareMatrix::operator=(const Matrix &a)
+	{
+		if (a.getMN().m == a.getMN().n)
+		{
+			Matrix *pp = this;
+			return *pp = a;
+		}
+		else
+		{
+			domain_error e("The m and n of the source are not equal, so it cannot be defined as a square matrix.");
+			throw e;
+		}
+	}
+
+	Fraction SquareMatrix::getDeterminant()
+	{
+		SquareMatrix ladder = this->getLadder();
+		Fraction result = 1;
+		for (int i = 0; i < mn.n; i++)
+		{
+			result *= ladder.A[i][i];
+		}
+		return result;
+	}
+
+	SquareMatrix SquareMatrix::getComplementarySubmatrix(int mIndex, int nIndex)
+	{
+		if (mn.n >= 2)
+		{
+			SquareMatrix minor(mn.n - 1);
+			for (int m = 0; m < minor.mn.m; m++)
+			{
+				int sm = m;
+				if (sm >= mIndex)
+				{
+					sm++;
+				}
+				for (int n = 0; n < minor.mn.n; n++)
+				{
+					int sn = n;
+					if (sn >= nIndex)
+					{
+						sn++;
+					}
+					minor.A[m][n] = A[sm][sn];
+				}
+			}
+			return minor;
+		}
+		else
+		{
+			domain_error e("At least a second-order square matrix is required to find the minor.");
+			throw e;
+		}
+	}
+
+	Fraction SquareMatrix::getMinor(int mIndex, int nIndex)
+	{
+		SquareMatrix submatrix = this->getComplementarySubmatrix(mIndex, nIndex);
+		return submatrix.getDeterminant();
+	}
+
+	Fraction SquareMatrix::getCofactor(int mIndex, int nIndex)
+	{
+		Fraction minor = this->getMinor(mIndex, nIndex);
+		int sumMN = mIndex + nIndex + 2;
+		if (sumMN % 2)
+		{
+			return -minor;
+		}
+		else
+		{
+			return minor;
+		}
+	}
+
+	SquareMatrix SquareMatrix::getAdjoint()
+	{
+		SquareMatrix adjoint(mn.n);
+		for (int m = 0; m < adjoint.mn.m; m++)
+		{
+			for (int n = 0; n < adjoint.mn.n; n++)
+			{
+				adjoint.A[n][m] = this->getCofactor(m, n);
+			}
+		}
+		return adjoint;
+	}
+
+	SquareMatrix SquareMatrix::getInverse()
+	{
+		Fraction a = this->getDeterminant();
+		if (a != 0)
+		{
+			return this->getAdjoint() / a;
+		}
+		else
+		{
+			domain_error e("Non-invertible matrix.");
+			throw e;
+		}
+	}
+
+	istream &operator>>(istream &input, SquareMatrix &a)
+	{
+		int n;
+		cout << endl
+			 << "Input n of the square matrix:" << endl;
+		input >> n;
+		a.Renew(n, n);
+		cout << "------Input items of the square matrix------" << endl;
+		for (int m = 0; m < a.mn.m; m++)
+		{
+			for (n = 0; n < a.mn.n; n++)
+			{
+				input >> a.A[m][n];
+			}
+			cout << endl;
+		}
+		return input;
 	}
 }

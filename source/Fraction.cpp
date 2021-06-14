@@ -33,10 +33,24 @@ namespace JoY
 		}
 	}
 
+	/* nmrt:分子，dnmnt:分母 */
 	Fraction::Fraction(int nmrt, int dnmnt)
 	{
 		this->nmrt = nmrt;
 		this->dnmnt = dnmnt;
+	}
+
+	Fraction::Fraction(double value)
+	{
+		double nmrt = value;
+		this->dnmnt = 1;
+		while (((int)nmrt) != nmrt)
+		{
+			nmrt *= 10;
+			this->dnmnt *= 10;
+		}
+		this->nmrt = nmrt;
+		this->reduce();
 	}
 
 	Fraction Fraction::operator-()
@@ -59,18 +73,6 @@ namespace JoY
 		newFra.reduce();
 		return newFra;
 	}
-	Fraction Fraction::operator+(const int &i)
-	{
-		Fraction newFra;
-		newFra.dnmnt = dnmnt;
-		newFra.nmrt = nmrt + dnmnt * i;
-		newFra.reduce();
-		return newFra;
-	}
-	Fraction operator+(int i, Fraction &fra)
-	{
-		return fra + i;
-	}
 
 	Fraction Fraction::operator-(const Fraction &fra)
 	{
@@ -79,18 +81,6 @@ namespace JoY
 		newFra.nmrt = nmrt * fra.dnmnt - fra.nmrt * dnmnt;
 		newFra.reduce();
 		return newFra;
-	}
-	Fraction Fraction::operator-(const int &i)
-	{
-		Fraction newFra;
-		newFra.dnmnt = dnmnt;
-		newFra.nmrt = nmrt - dnmnt * i;
-		newFra.reduce();
-		return newFra;
-	}
-	Fraction operator-(int i, Fraction &fra)
-	{
-		return -(fra - i);
 	}
 
 	Fraction Fraction::operator*(const Fraction &fra)
@@ -101,18 +91,6 @@ namespace JoY
 		newFra.reduce();
 		return newFra;
 	}
-	Fraction Fraction::operator*(const int &i)
-	{
-		Fraction newFra;
-		newFra.nmrt = nmrt * i;
-		newFra.dnmnt = dnmnt;
-		newFra.reduce();
-		return newFra;
-	}
-	Fraction operator*(int i, Fraction &fra)
-	{
-		return fra * i;
-	}
 
 	Fraction Fraction::operator/(const Fraction &fra)
 	{
@@ -122,18 +100,6 @@ namespace JoY
 		newFra.reduce();
 		return newFra;
 	}
-	Fraction Fraction::operator/(const int &i)
-	{
-		Fraction newFra;
-		newFra.nmrt = nmrt;
-		newFra.dnmnt = dnmnt * i;
-		newFra.reduce();
-		return newFra;
-	}
-	Fraction operator/(int i, Fraction &fra)
-	{
-		return ~(fra / i);
-	}
 
 	const Fraction &Fraction::operator=(const Fraction &fra)
 	{
@@ -141,47 +107,25 @@ namespace JoY
 		dnmnt = fra.dnmnt;
 		return fra;
 	}
-	const int &Fraction::operator=(const int &i)
-	{
-		nmrt = i;
-		dnmnt = 1;
-		return i;
-	}
 
 	Fraction Fraction::operator+=(const Fraction &fra)
 	{
 		return *this = *this + fra;
-	}
-	Fraction Fraction::operator+=(const int &i)
-	{
-		return *this = *this + i;
 	}
 
 	Fraction Fraction::operator-=(const Fraction &fra)
 	{
 		return *this = *this - fra;
 	}
-	Fraction Fraction::operator-=(const int &i)
-	{
-		return *this = *this - i;
-	}
 
 	Fraction Fraction::operator*=(const Fraction &fra)
 	{
 		return *this = *this * fra;
 	}
-	Fraction Fraction::operator*=(const int &i)
-	{
-		return *this = *this * i;
-	}
 
 	Fraction Fraction::operator/=(const Fraction &fra)
 	{
 		return *this = *this / fra;
-	}
-	Fraction Fraction::operator/=(const int &i)
-	{
-		return *this = *this / i;
 	}
 
 	bool Fraction::operator<(const Fraction &fra)
@@ -195,21 +139,6 @@ namespace JoY
 			return false;
 		}
 	}
-	bool Fraction::operator<(const int &i)
-	{
-		if (nmrt < i * dnmnt)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	bool operator<(int i, Fraction &fra)
-	{
-		return fra > i;
-	}
 
 	bool Fraction::operator<=(const Fraction &fra)
 	{
@@ -221,21 +150,6 @@ namespace JoY
 		{
 			return false;
 		}
-	}
-	bool Fraction::operator<=(const int &i)
-	{
-		if (nmrt <= i * dnmnt)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	bool operator<=(int i, Fraction &fra)
-	{
-		return fra >= i;
 	}
 
 	bool Fraction::operator==(const Fraction &fra)
@@ -249,33 +163,10 @@ namespace JoY
 			return false;
 		}
 	}
-	bool Fraction::operator==(const int &i)
-	{
-		if (nmrt == i * dnmnt)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	bool operator==(int i, Fraction &fra)
-	{
-		return fra == i;
-	}
 
 	bool Fraction::operator!=(const Fraction &fra)
 	{
 		return !(*this == fra);
-	}
-	bool Fraction::operator!=(const int &i)
-	{
-		return !(*this == i);
-	}
-	bool operator!=(int i, Fraction &fra)
-	{
-		return fra != i;
 	}
 
 	bool Fraction::operator>(const Fraction &fra)
@@ -289,21 +180,6 @@ namespace JoY
 			return false;
 		}
 	}
-	bool Fraction::operator>(const int &i)
-	{
-		if (nmrt > i * dnmnt)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	bool operator>(int i, Fraction &fra)
-	{
-		return fra < i;
-	}
 
 	bool Fraction::operator>=(const Fraction &fra)
 	{
@@ -315,21 +191,6 @@ namespace JoY
 		{
 			return false;
 		}
-	}
-	bool Fraction::operator>=(const int &i)
-	{
-		if (nmrt >= i * dnmnt)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	bool operator>=(int i, Fraction &fra)
-	{
-		return fra <= i;
 	}
 
 	istream &operator>>(istream &input, Fraction &fra)
