@@ -6,34 +6,6 @@ using namespace std;
 
 namespace JoY
 {
-	void Fraction::reduce()
-	{
-		if (nmrt == 0)
-		{
-			dnmnt = 1;
-		}
-		else
-		{
-			if (dnmnt < 0)
-			{
-				nmrt = -nmrt;
-				dnmnt = -dnmnt;
-			}
-			int i = abs(nmrt) < abs(dnmnt) ? abs(nmrt) : abs(dnmnt);
-			while (i > 1)
-			{
-				if (nmrt % i == 0 && dnmnt % i == 0)
-				{
-					nmrt /= i;
-					dnmnt /= i;
-					break;
-				}
-				i--;
-			}
-		}
-	}
-
-	/* nmrt:分子，dnmnt:分母 */
 	Fraction::Fraction(int nmrt, int dnmnt)
 	{
 		this->nmrt = nmrt;
@@ -255,5 +227,32 @@ namespace JoY
 			break;
 		}
 		return output;
+	}
+
+	void Fraction::reduce()
+	{
+		if (nmrt == 0)
+		{
+			dnmnt = 1;
+		}
+		else
+		{
+			if (dnmnt < 0)
+			{
+				nmrt = -nmrt;
+				dnmnt = -dnmnt;
+			}
+			int i = abs(nmrt) < abs(dnmnt) ? abs(nmrt) : abs(dnmnt);
+			while (i > 1)
+			{
+				if (nmrt % i == 0 && dnmnt % i == 0)
+				{
+					nmrt /= i;
+					dnmnt /= i;
+					break;
+				}
+				i--;
+			}
+		}
 	}
 }

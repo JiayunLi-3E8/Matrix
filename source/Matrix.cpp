@@ -19,35 +19,6 @@ namespace JoY
 	}
 
 	// -------------------------------> Matrix <-------------------------------
-	void Matrix::New()
-	{
-		A = new Fraction *[mn.m];
-		for (int i = 0; i < mn.m; i++)
-		{
-			A[i] = new Fraction[mn.n];
-		}
-	}
-
-	void Matrix::Del()
-	{
-		for (int i = 0; i < mn.m; i++)
-		{
-			delete[] A[i];
-		}
-		delete[] A;
-	}
-
-	void Matrix::Renew(int m, int n)
-	{
-		if (mn.m != m || mn.n != n)
-		{
-			Del();
-			mn.m = m;
-			mn.n = n;
-			New();
-		}
-	}
-
 	Matrix::Matrix(int m, int n)
 	{
 		mn.m = m;
@@ -415,6 +386,35 @@ namespace JoY
 			output << endl;
 		}
 		return output;
+	}
+
+	void Matrix::New()
+	{
+		A = new Fraction *[mn.m];
+		for (int i = 0; i < mn.m; i++)
+		{
+			A[i] = new Fraction[mn.n];
+		}
+	}
+
+	void Matrix::Del()
+	{
+		for (int i = 0; i < mn.m; i++)
+		{
+			delete[] A[i];
+		}
+		delete[] A;
+	}
+
+	void Matrix::Renew(int m, int n)
+	{
+		if (mn.m != m || mn.n != n)
+		{
+			Del();
+			mn.m = m;
+			mn.n = n;
+			New();
+		}
 	}
 
 	// -------------------------------> SquareMatrix <-------------------------------
