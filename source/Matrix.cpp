@@ -1,32 +1,22 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
-#include "Matrix"
-#include "Fraction"
+#include "Matrix.h"
 
 using namespace std;
 
 namespace JoY
 {
-	// -------------------------------> MN <-------------------------------
-	bool MN::operator==(const MN &mn)
-	{
-		return mn.m == m && mn.n == n;
-	}
-
-	bool MN::operator!=(const MN &mn)
-	{
-		return !(*this == mn);
-	}
-
 	// -------------------------------> Matrix <-------------------------------
-	Matrix::Matrix(int m, int n)
+	template<typename T>
+	Matrix<T>::Matrix(int m, int n)
 	{
 		mn.m = m;
 		mn.n = n;
 		New();
 	}
 
-	Matrix::Matrix(const Matrix &o)
+	template<typename T>
+	Matrix<T>::Matrix(const Matrix &o)
 	{
 		mn.m = o.mn.m;
 		mn.n = o.mn.n;
@@ -40,18 +30,21 @@ namespace JoY
 		}
 	}
 
-	Matrix::~Matrix()
+	template<typename T>
+	Matrix<T>::~Matrix()
 	{
 		Del();
 		// std::cout << "~" << this << std::endl;
 	}
 
-	const MN &Matrix::getMN() const
+	template<typename T>
+	const MN &Matrix<T>::getMN() const
 	{
 		return mn;
 	}
 
-	Matrix Matrix::getAT()
+	template<typename T>
+	Matrix<T> Matrix<T>::getAT()
 	{
 		Matrix aT(mn.n, mn.m);
 		for (int m = 0; m < mn.m; m++)
@@ -64,7 +57,8 @@ namespace JoY
 		return aT;
 	}
 
-	Matrix Matrix::getLadder()
+	template<typename T>
+	Matrix<T> Matrix<T>::getLadder()
 	{
 		Matrix aLadder(mn.m, mn.n);
 		aLadder = *this;
@@ -121,7 +115,8 @@ namespace JoY
 		return aLadder;
 	}
 
-	Matrix Matrix::getSimplestLine()
+	template<typename T>
+	Matrix<T> Matrix<T>::getSimplestLine()
 	{
 		Matrix aSimplestLine = this->getLadder();
 
@@ -183,7 +178,8 @@ namespace JoY
 		return aSimplestLine;
 	}
 
-	int Matrix::r()
+	template<typename T>
+	int Matrix<T>::r()
 	{
 		Matrix asl = this->getSimplestLine();
 		int m = 0;
@@ -207,7 +203,8 @@ namespace JoY
 		return m;
 	}
 
-	const Matrix &Matrix::operator=(const Matrix &a)
+	template<typename T>
+	const Matrix<T> &Matrix<T>::operator=(const Matrix &a)
 	{
 		this->Renew(a.mn.m, a.mn.n);
 		for (int m = 0; m < mn.m; m++)
@@ -220,7 +217,8 @@ namespace JoY
 		return a;
 	}
 
-	Matrix Matrix::operator+(Matrix &a)
+	template<typename T>
+	Matrix<T> Matrix<T>::operator+(Matrix &a)
 	{
 		if (a.mn == mn)
 		{
@@ -241,7 +239,8 @@ namespace JoY
 		}
 	}
 
-	Matrix Matrix::operator-(Matrix &a)
+	template<typename T>
+	Matrix<T> Matrix<T>::operator-(Matrix &a)
 	{
 		if (a.mn == mn)
 		{
@@ -262,7 +261,8 @@ namespace JoY
 		}
 	}
 
-	void Matrix::operator+=(Matrix &a)
+	template<typename T>
+	void Matrix<T>::operator+=(Matrix &a)
 	{
 		if (a.mn == mn)
 		{
@@ -281,7 +281,8 @@ namespace JoY
 		}
 	}
 
-	void Matrix::operator-=(Matrix &a)
+	template<typename T>
+	void Matrix<T>::operator-=(Matrix &a)
 	{
 		if (a.mn == mn)
 		{
@@ -300,7 +301,8 @@ namespace JoY
 		}
 	}
 
-	Matrix Matrix::operator*(const Matrix &a)
+	template<typename T>
+	Matrix<T> Matrix<T>::operator*(const Matrix &a)
 	{
 		if (mn.n == a.mn.m)
 		{
@@ -324,7 +326,8 @@ namespace JoY
 		}
 	}
 
-	Matrix Matrix::operator/(const Fraction &a)
+	template<typename T>
+	Matrix<T> Matrix<T>::operator/(const T &a)
 	{
 		Matrix newA(mn.m, mn.n);
 		for (int m = 0; m < mn.m; m++)
@@ -337,7 +340,8 @@ namespace JoY
 		return newA;
 	}
 
-	Matrix Matrix::operator*(const Fraction &a)
+	template<typename T>
+	Matrix<T> Matrix<T>::operator*(const T &a)
 	{
 		Matrix newA(mn.m, mn.n);
 		for (int m = 0; m < mn.m; m++)
@@ -350,16 +354,18 @@ namespace JoY
 		return newA;
 	}
 
-	Matrix operator*(const Fraction &a, Matrix &A)
-	{
-		return A * a;
-	}
+	// template<typename T>
+	// Matrix<T> operator*(const T &a, const Matrix<T> &A)
+	// {
+	// 	return A * a;
+	// }
 
-	istream &operator>>(istream &input, Matrix &a)
+	template<typename T>
+	istream &operator>>(istream &input, Matrix<T> &a)
 	{
 		int m, n;
 		cout << endl
-			 << "Input m,n of the matrix(Separate by space):" << endl;
+			<< "Input m,n of the matrix(Separate by space):" << endl;
 		input >> m >> n;
 		a.Renew(m, n);
 		cout << "---------Input items of the matrix---------" << endl;
@@ -374,7 +380,8 @@ namespace JoY
 		return input;
 	}
 
-	ostream &operator<<(ostream &output, Matrix a)
+	template<typename T>
+	ostream &operator<<(ostream &output, Matrix<T> &a)
 	{
 		for (int m = 0; m < a.mn.m; m++)
 		{
@@ -388,16 +395,18 @@ namespace JoY
 		return output;
 	}
 
-	void Matrix::New()
+	template<typename T>
+	void Matrix<T>::New()
 	{
-		A = new Fraction *[mn.m];
+		A = new T *[mn.m];
 		for (int i = 0; i < mn.m; i++)
 		{
-			A[i] = new Fraction[mn.n];
+			A[i] = new T[mn.n];
 		}
 	}
 
-	void Matrix::Del()
+	template<typename T>
+	void Matrix<T>::Del()
 	{
 		for (int i = 0; i < mn.m; i++)
 		{
@@ -406,7 +415,8 @@ namespace JoY
 		delete[] A;
 	}
 
-	void Matrix::Renew(int m, int n)
+	template<typename T>
+	void Matrix<T>::Renew(int m, int n)
 	{
 		if (mn.m != m || mn.n != n)
 		{
@@ -418,18 +428,21 @@ namespace JoY
 	}
 
 	// -------------------------------> SquareMatrix <-------------------------------
-	SquareMatrix::SquareMatrix(int n) : Matrix(n, n) {}
+	template<typename T>
+	SquareMatrix<T>::SquareMatrix(int n) : Matrix<T>(n, n) {}
 
-	SquareMatrix::SquareMatrix(Matrix src)
+	template<typename T>
+	SquareMatrix<T>::SquareMatrix(Matrix<T> src)
 	{
 		*this = src;
 	}
 
-	const Matrix &SquareMatrix::operator=(const Matrix &a)
+	template<typename T>
+	const Matrix<T> &SquareMatrix<T>::operator=(const Matrix<T> &a)
 	{
 		if (a.getMN().m == a.getMN().n)
 		{
-			Matrix *pp = this;
+			Matrix<T> *pp = this;
 			return *pp = a;
 		}
 		else
@@ -439,22 +452,24 @@ namespace JoY
 		}
 	}
 
-	Fraction SquareMatrix::getDeterminant()
+	template<typename T>
+	T SquareMatrix<T>::getDeterminant()
 	{
 		SquareMatrix ladder = this->getLadder();
-		Fraction result = 1;
-		for (int i = 0; i < mn.n; i++)
+		T result = 1;
+		for (int i = 0; i < this->mn.n; i++)
 		{
 			result *= ladder.A[i][i];
 		}
 		return result;
 	}
 
-	SquareMatrix SquareMatrix::getComplementarySubmatrix(int mIndex, int nIndex)
+	template<typename T>
+	SquareMatrix<T> SquareMatrix<T>::getComplementarySubmatrix(int mIndex, int nIndex)
 	{
-		if (mn.n >= 2)
+		if (this->mn.n >= 2)
 		{
-			SquareMatrix minor(mn.n - 1);
+			SquareMatrix minor(this->mn.n - 1);
 			for (int m = 0; m < minor.mn.m; m++)
 			{
 				int sm = m;
@@ -469,7 +484,7 @@ namespace JoY
 					{
 						sn++;
 					}
-					minor.A[m][n] = A[sm][sn];
+					minor.A[m][n] = this->A[sm][sn];
 				}
 			}
 			return minor;
@@ -481,15 +496,17 @@ namespace JoY
 		}
 	}
 
-	Fraction SquareMatrix::getMinor(int mIndex, int nIndex)
+	template<typename T>
+	T SquareMatrix<T>::getMinor(int mIndex, int nIndex)
 	{
 		SquareMatrix submatrix = this->getComplementarySubmatrix(mIndex, nIndex);
 		return submatrix.getDeterminant();
 	}
 
-	Fraction SquareMatrix::getCofactor(int mIndex, int nIndex)
+	template<typename T>
+	T SquareMatrix<T>::getCofactor(int mIndex, int nIndex)
 	{
-		Fraction minor = this->getMinor(mIndex, nIndex);
+		T minor = this->getMinor(mIndex, nIndex);
 		int sumMN = mIndex + nIndex + 2;
 		if (sumMN % 2)
 		{
@@ -501,9 +518,10 @@ namespace JoY
 		}
 	}
 
-	SquareMatrix SquareMatrix::getAdjoint()
+	template<typename T>
+	SquareMatrix<T> SquareMatrix<T>::getAdjoint()
 	{
-		SquareMatrix adjoint(mn.n);
+		SquareMatrix adjoint(this->mn.n);
 		for (int m = 0; m < adjoint.mn.m; m++)
 		{
 			for (int n = 0; n < adjoint.mn.n; n++)
@@ -514,9 +532,10 @@ namespace JoY
 		return adjoint;
 	}
 
-	SquareMatrix SquareMatrix::getInverse()
+	template<typename T>
+	SquareMatrix<T> SquareMatrix<T>::getInverse()
 	{
-		Fraction a = this->getDeterminant();
+		T a = this->getDeterminant();
 		if (a != 0)
 		{
 			return this->getAdjoint() / a;
@@ -528,11 +547,12 @@ namespace JoY
 		}
 	}
 
-	istream &operator>>(istream &input, SquareMatrix &a)
+	template<typename T>
+	istream &operator>>(istream &input, SquareMatrix<T> &a)
 	{
 		int n;
 		cout << endl
-			 << "Input n of the square matrix:" << endl;
+			<< "Input n of the square matrix:" << endl;
 		input >> n;
 		a.Renew(n, n);
 		cout << "------Input items of the square matrix------" << endl;

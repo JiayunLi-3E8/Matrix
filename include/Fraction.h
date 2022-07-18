@@ -1,4 +1,4 @@
-//@Birth:created by JiayunLi on 2021-06-16
+﻿//@Birth:created by JiayunLi on 2021-06-16
 //@Content:分数库，定义分数类型
 //@Version:1.0.0
 #ifndef _FRACTION_

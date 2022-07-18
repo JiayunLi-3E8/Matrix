@@ -1,6 +1,7 @@
 #include <iostream>
-#include "Matrix"
-#include "Fraction"
+#include "Matrix.h"
+#include "Matrix.cpp"
+#include "Fraction.h"
 
 using namespace std;
 using namespace JoY;
@@ -10,7 +11,7 @@ int main()
 	cout << "----------------> Matrix calculation <----------------" << endl;
 
 	// Matrix b;
-	SquareMatrix a;
+	SquareMatrix<Fraction> a;
 
 	cin >> a /* >> b */;
 
@@ -20,22 +21,22 @@ int main()
 		 << "[a]:" << a << "r(a)=" << a.r() << endl
 		 << endl;
 
-	SquareMatrix aT = a.getAT();
+	SquareMatrix<Fraction> aT = a.getAT();
 	cout << "[aT]:" << aT << endl;
 
-	SquareMatrix ald = a.getLadder();
+	SquareMatrix<Fraction> ald = a.getLadder();
 	cout << "[ald]:" << ald << endl;
 
-	SquareMatrix aSL = a.getSimplestLine();
+	SquareMatrix<Fraction> aSL = a.getSimplestLine();
 	cout << "[aSL]:" << aSL << endl;
 
 	Fraction dmt = a.getDeterminant();
 	cout << "dmt:" << dmt << endl;
 
-	SquareMatrix adj = a.getAdjoint();
+	SquareMatrix<Fraction> adj = a.getAdjoint();
 	cout << "[adj]:" << adj << endl;
 
-	SquareMatrix inv = a.getInverse();
+	SquareMatrix<Fraction> inv = a.getInverse();
 	cout << "[inv]:" << inv << endl;
 
 	return 0;

@@ -1,4 +1,4 @@
-//@Birth:created by JiayunLi on 2021-06-16
+﻿//@Birth:created by JiayunLi on 2021-06-16
 //@Content:矩阵库，定义矩阵类型及其运算
 //@Version:1.0.0
 #ifndef _MATRIX_
@@ -8,18 +8,33 @@
 
 namespace JoY
 {
-	// 分数类型
-	class Fraction;
-
 	// 定义矩阵的m行和n列
 	struct MN
 	{
 		int m, n;
-		bool operator==(const MN &mn);
-		bool operator!=(const MN &mn);
+		bool operator==(const MN &mn) {
+			return mn.m == m && mn.n == n;
+		}
+		bool operator!=(const MN &mn) {
+			return !(*this == mn);
+		}
 	};
 
+	template<typename T>
+	class Matrix;
+	template<typename T>
+	class SquareMatrix;
+	// template<typename T>
+	// Matrix<T> operator*(const T &a, const Matrix<T> &A);
+	template<typename T>
+	std::istream &operator>>(std::istream &input, Matrix<T> &a);
+	template<typename T>
+	std::ostream &operator<<(std::ostream &output, Matrix<T> &a);
+	template<typename T>
+	std::istream &operator>>(std::istream &input, SquareMatrix<T> &a);
+
 	// 矩阵类
+	template<typename T>
 	class Matrix
 	{
 	public:
@@ -43,17 +58,17 @@ namespace JoY
 		void operator+=(Matrix &a);
 		void operator-=(Matrix &a);
 		Matrix operator*(const Matrix &a);
-		Matrix operator/(const Fraction &a);
-		Matrix operator*(const Fraction &a);
-		friend Matrix operator*(const Fraction &a, const Matrix &A);
-		friend std::istream &operator>>(std::istream &input, Matrix &a);
-		friend std::ostream &operator<<(std::ostream &output, Matrix a);
+		Matrix operator/(const T &a);
+		Matrix operator*(const T &a);
+		// friend Matrix<T> operator* <T>(const T &a, const Matrix<T> &A);
+		friend std::istream &operator>> <T>(std::istream &input, Matrix<T> &a);
+		friend std::ostream &operator<< <T>(std::ostream &output, Matrix<T> &a);
 
 	protected:
 		// 行列数
 		MN mn;
 		// 矩阵单元的二维数组指针
-		Fraction **A;
+		T **A;
 		// 根据行列数动态构造数组
 		void New();
 		// 释放数组内存
@@ -63,26 +78,27 @@ namespace JoY
 	};
 
 	// 方阵类
-	class SquareMatrix : public Matrix
+	template<typename T>
+	class SquareMatrix : public Matrix<T>
 	{
 	public:
 		// n：构造方阵的阶数
 		explicit SquareMatrix(int n = 3);
-		SquareMatrix(Matrix src);
-		const Matrix &operator=(const Matrix &a);
+		SquareMatrix(Matrix<T> src);
+		const Matrix<T> &operator=(const Matrix<T> &a);
 		// 方阵的行列式结果
-		Fraction getDeterminant();
+		T getDeterminant();
 		// 对应index(从0开始)位置的余子阵
 		SquareMatrix getComplementarySubmatrix(int mIndex, int nIndex);
 		// 余子式
-		Fraction getMinor(int mIndex, int nIndex);
+		T getMinor(int mIndex, int nIndex);
 		// 代数余子式
-		Fraction getCofactor(int mIndex, int nIndex);
+		T getCofactor(int mIndex, int nIndex);
 		// 伴随矩阵
 		SquareMatrix getAdjoint();
 		// 逆矩阵
 		SquareMatrix getInverse();
-		friend std::istream &operator>>(std::istream &input, SquareMatrix &a);
+		friend std::istream &operator>> <T>(std::istream &input, SquareMatrix<T> &a);
 	};
 }
 

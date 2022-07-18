@@ -1,6 +1,6 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
-#include "Fraction"
+#include "Fraction.h"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ namespace JoY
 			nmrt *= 10;
 			this->dnmnt *= 10;
 		}
-		this->nmrt = nmrt;
+		this->nmrt = (int)nmrt;
 		this->reduce();
 	}
 
